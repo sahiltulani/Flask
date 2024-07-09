@@ -6,9 +6,9 @@ from crewai import Agent, Crew, Task, Process
 import openai
 
 # Set environment variables for API access
-os.environ["OPENAI_API_BASE"] = "https://api.groq.com/openai/v1"
-os.environ["OPENAI_MODEL_NAME"] = "llama3-70b-8192"
-os.environ["OPENAI_API_KEY"] = "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"
+openai.api_base = os.getenv("OPENAI_API_BASE", "https://api.groq.com/openai/v1")
+openai.model_name = os.getenv("OPENAI_MODEL_NAME", "llama3-70b-8192")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Define the Explanation Generator Agent
 explanation_generator = Agent(
@@ -74,6 +74,7 @@ def ask():
     bot_response = generate_explanation(question)
     chat_history.append({"user": question, "bot": bot_response})
     return jsonify({"response": bot_response})
+
 @app.route('/upload', methods=['POST'])
 def upload():
     global pdf_content
@@ -97,5 +98,5 @@ def upload():
             os.remove(file_path)  # Remove the file after processing
     return jsonify({"message": "No file uploaded."}), 400
 
-
-
+if __name__ == '__main__':
+    app.run(debug=True)
